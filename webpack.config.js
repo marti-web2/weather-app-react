@@ -1,5 +1,6 @@
 const path = require('path')
 const HTMLWebpackPlugin = require('html-webpack-plugin')
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
 
@@ -10,16 +11,10 @@ module.exports = {
     filename: 'bundle.js'
   },
 
-  plugins: [
-    new HTMLWebpackPlugin({
-      template: './public/index.html'
-    })
-  ],
-
   module: {
     rules: [
       {
-        test: /.(js)$/,
+        test: /.(js|jsx)$/,
         exclude: /node_modules/,
         use: {
           loader: 'babel-loader',
@@ -27,8 +22,27 @@ module.exports = {
             presets: ['@babel/preset-env', '@babel/preset-react']
           }
         }
-      }
+      },
+
+      {
+        test: /\.css$/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader", "postcss-loader",
+          ],
+      },
     ]
-  }
+  },
+
+  plugins: [
+    new MiniCssExtractPlugin({
+      filename: "index.css",
+      chunkFilename: "index.css"
+    }),
+    new HTMLWebpackPlugin({
+      template: './public/index.html',
+      filename: './index.html'
+    })
+  ],
 
 }
